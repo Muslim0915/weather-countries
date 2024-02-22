@@ -14,7 +14,7 @@ const updateWeather = async () => {
         console.log(data);
     } catch (error) {
         console.log(error);
-        document.querySelector('.container').innerHTML = 'You probably entered the cities incorrectly or have bad internet.';
+        weatherContainer.innerHTML = 'You probably entered the cities incorrectly or have bad internet.';
     }
 };
 
