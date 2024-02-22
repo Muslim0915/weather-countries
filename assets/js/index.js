@@ -1,9 +1,7 @@
 let currentLocation = 'TASHKENT';
-let API = `https://api.weatherapi.com/v1/current.json?key=43cbfe0275934e6b96e54230242202&q=${currentLocation}&aqi=yes`;
-
+let API = `https://api.weatherapi.com/v1/current.json?key=43cbfe0275934e6b96e54230242202&q=Tashkent&aqi=yes`;
 const weatherContainer = document.querySelector('.weather__container');
-const weatherLocation = document.querySelector('.location');
-const weatherLocaltime = document.querySelector('.weather__localtime');
+const weatherLocationTitle = document.querySelector('.location');
 const searchButton = document.querySelector('.fa-search');
 
 const updateWeather = async () => {
@@ -15,11 +13,13 @@ const updateWeather = async () => {
     } catch (error) {
         console.log(error);
         weatherContainer.innerHTML = 'You probably entered the cities incorrectly or have bad internet.';
+        weatherLocationTitle.innerHTML = ''
     }
 };
 
 const setWeatherStates = (data) => {
-    weatherLocation.innerHTML = `${data.location.name}, ${data.location.country}`
+    const weatherLocaltime = document.querySelector('.weather__localtime');
+    weatherLocationTitle.innerHTML = `${data.location.name}, ${data.location.country}`
     weatherContainer.innerHTML = `
         <div class="weather__icon">
             <img src="${data.current.condition.icon}" alt="icon">
@@ -42,18 +42,23 @@ const saveData = () => {
     localStorage.setItem('currentLocation', currentLocation);
 };
 
-const loadAndSetWeather = () => {
+const loadAndSetWeather = async () => {
     currentLocation = localStorage.getItem('currentLocation') || currentLocation;
     API = `https://api.weatherapi.com/v1/current.json?key=43cbfe0275934e6b96e54230242202&q=${currentLocation}&aqi=yes`;
-    updateWeather();
+    await updateWeather();
 };
 
 window.onload = loadAndSetWeather;
-
-searchButton.addEventListener('click', () => {
+async function searchLocation() {
     currentLocation = document.querySelector('.search-input').value;
     document.querySelector('.search-input').value = '';
     saveData();
-    loadAndSetWeather();
-});
+    await loadAndSetWeather();
+}
+window.addEventListener('keydown', async (event)=>{
+    if(event.key === 'Enter'){
+        await searchLocation();
+    }
+})
+searchButton.addEventListener('click',() => searchLocation());
 
