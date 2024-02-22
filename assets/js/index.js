@@ -23,9 +23,8 @@ const updateWeather = async (currentLocation) => {
         setWeatherStates(data);
     } catch (error) {
         console.log(error);
+        emptyingFields();
         weatherContainer.innerHTML = 'You probably entered the cities incorrectly or have bad internet.';
-        weatherLocationTitle.innerHTML = '';
-        weatherLocaltime.innerHTML = '';
     }
     finally {
         hideLoader()
@@ -34,7 +33,7 @@ const updateWeather = async (currentLocation) => {
 
 const setWeatherStates = (data) => {
     weatherLocationTitle.innerHTML = `${data.location.name}, ${data.location.country}`;
-    weatherContainer.innerHTML = ''; // Очищаем контейнер перед обновлением
+    weatherContainer.innerHTML = '';
     weatherContainer.innerHTML += `
         <div class="weather__icon">
             <img src="${data.current.condition.icon}" alt="icon">
@@ -66,6 +65,7 @@ window.onload = loadAndSetWeather;
 
 async function searchLocation() {
     let currentLocation = document.querySelector('.search-input').value;
+    emptyingFields();
     saveData(currentLocation);
     await loadAndSetWeather(currentLocation);
     document.querySelector('.search-input').value = '';
@@ -87,4 +87,10 @@ function showLoader() {
 
 function hideLoader() {
     loader.classList.add('hidden');
+}
+
+function emptyingFields() {
+    weatherLocationTitle.innerHTML = '';
+    weatherContainer.innerHTML = '';
+    weatherLocaltime.innerHTML = '';
 }
